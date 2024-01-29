@@ -1,8 +1,8 @@
-import Dashboard from './pages/dashboard';
+import Dashboard from '@/pages/dashboard';
 
-function App() {
+const App = () => {
   //router configs for multi-page goes here
   return <Dashboard />;
-}
+};
 
 export default App;
