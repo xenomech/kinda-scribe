@@ -1,8 +1,7 @@
-import type { Config } from 'tailwindcss';
-
+import animate from 'tailwindcss-animate';
 const config = {
   darkMode: ['class'],
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./index.html', './src/**/**/*.{ts,tsx}'],
 
   prefix: '',
   theme: {
@@ -14,6 +13,9 @@ const config = {
       },
     },
     extend: {
+      colors: {
+        primary: '#0BA5ED',
+      },
       keyframes: {
         'accordion-down': {
           from: { height: '0' },
@@ -30,7 +32,7 @@ const config = {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
-} satisfies Config;
+  plugins: [animate],
+};
 
 export default config;

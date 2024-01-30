@@ -1,5 +1,5 @@
 const Editor = () => {
-  return <div className="bg-red-400 md:w-1/2">Editor</div>;
+  return <div className="">Editor</div>;
 };
 
 export default Editor;
