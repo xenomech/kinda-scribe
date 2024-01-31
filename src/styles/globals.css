@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .ce-inline-toolbar {
-  @apply rounded-full px-2 bg-white/90;
+  @apply rounded-xl px-2 bg-white/90;
 }
 .ce-toolbar__plus {
   @apply text-primary rounded-full border;

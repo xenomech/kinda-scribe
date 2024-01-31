@@ -1,17 +1,16 @@
+import usePost from '@/hooks/use-post';
 import EditorJS from '@editorjs/editorjs';
-import { XIcon } from 'lucide-react';
-import React from 'react';
+import { BoldIcon, ItalicIcon, Loader2, XIcon } from 'lucide-react';
+import React, { useCallback } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Button } from '../ui/button';
-
 const Editor = () => {
   const ref = React.useRef<EditorJS>();
-  // const [isSaving, setIsSaving] = React.useState<boolean>(false);
+  const [isSaving, setIsSaving] = React.useState<boolean>(false);
   const [isMounted, setIsMounted] = React.useState<boolean>(false);
-  // const [data, setData] = React.useState<EditorJS.OutputData>();
+  const { post, setPost } = usePost();
 
   const initializeEditor = React.useCallback(async () => {
-    const EditorJS = (await import('@editorjs/editorjs')).default;
     const Strikethrough = (await import('@sotaproject/strikethrough')).default;
     const Underline = (await import('@editorjs/underline')).default;
     if (!ref.current) {
@@ -22,7 +21,12 @@ const Editor = () => {
         },
         placeholder: 'Type here to write your post...',
         inlineToolbar: true,
-        // data,
+        data: post,
+        sanitizer: {
+          a: {
+            href: true,
+          },
+        },
         tools: {
           strikethrough: Strikethrough,
           Underline: Underline,
@@ -32,7 +36,7 @@ const Editor = () => {
         },
       });
     }
-  }, []);
+  }, [post]);
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -50,17 +54,45 @@ const Editor = () => {
       };
     }
   }, [isMounted, initializeEditor]);
+
+  const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    console.log(post);
+    setIsSaving((prev) => !prev);
+    const data = await ref?.current?.save();
+    setPost(data);
+    setIsSaving((prev) => !prev);
+  };
+  const handleSaveCallback = useCallback(handleSave, [post, setPost]);
+  React.useEffect(() => {
+    const interval = setInterval(handleSaveCallback, 15000);
+    return () => clearInterval(interval);
+  }, [handleSaveCallback]);
+  if (!isMounted) {
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <Loader2 className="w-10 h-10 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <form>
+      <div>
+        <BoldIcon className="w-4 h-4" />
+        <ItalicIcon className="w-4 h-4" />
+      </div>
       <div className="grid w-full gap-10">
-        <div className="flex w-full items-center justify-between">
-          <Button type="submit">
-            {/* {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} */}
-            <span>Save</span>
-          </Button>
-        </div>
         <div className="prose prose-stone mx-auto w-[800px] dark:prose-invert">
           <div id="editor" className="min-h-[500px]" />
+        </div>
+      </div>
+      <div>
+        <div className="flex w-full items-center justify-between">
+          <Button onClick={handleSave}>
+            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <span>Save</span>
+          </Button>
         </div>
       </div>
     </form>
