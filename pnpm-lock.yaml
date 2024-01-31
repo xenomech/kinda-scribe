@@ -11,9 +11,6 @@ dependencies:
   '@editorjs/editorjs':
     specifier: 2.26.5
     version: 2.26.5
-  '@editorjs/header':
-    specifier: 2.7.0
-    version: 2.7.0
   '@editorjs/inline-code':
     specifier: 1.4.0
     version: 1.4.0
@@ -592,12 +589,6 @@ packages:
       codex-tooltip: 1.0.5
       html-janitor: 2.0.4
       nanoid: 3.3.7
-    dev: false
-
-  /@editorjs/header@2.7.0:
-    resolution: {integrity: sha512-4fGKGe2ZYblVqR/P/iw5ieG00uXInFgNMftBMqJRYcB2hUPD30kuu7Sn6eJDcLXoKUMOeqi8Z2AlUxYAmvw7zQ==}
-    dependencies:
-      '@codexteam/icons': 0.0.5
     dev: false
 
   /@editorjs/inline-code@1.4.0:
