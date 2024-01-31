@@ -1,11 +1,11 @@
+import EditorFooter from '@/components/ui/editor-footer';
+import EditorHeader from '@/components/ui/editor-header';
+import EditorToolbar from '@/components/ui/editor-toolbar';
 import usePost from '@/hooks/use-post';
 import EditorJS from '@editorjs/editorjs';
 import { Loader2, XIcon } from 'lucide-react';
 import React, { useCallback } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import EditorFooter from '../ui/editor-footer';
-import EditorHeader from '../ui/editor-header';
-import EditorToolbar from '../ui/editor-toolbar';
 const Editor = () => {
   const ref = React.useRef<EditorJS>();
   const [isSaving, setIsSaving] = React.useState<boolean>(false);
@@ -13,6 +13,7 @@ const Editor = () => {
   const { post, setPost } = usePost();
 
   const initializeEditor = React.useCallback(async () => {
+    const EditorJS = (await import('@editorjs/editorjs')).default;
     const tools = (await import('@/configs/editor')).default;
     if (!ref.current) {
       const editor = new EditorJS({
@@ -23,11 +24,6 @@ const Editor = () => {
         placeholder: 'Type here to write your post...',
         inlineToolbar: true,
         data: post,
-        sanitizer: {
-          a: {
-            href: true,
-          },
-        },
         tools,
       });
     }
@@ -60,7 +56,7 @@ const Editor = () => {
   };
   const handleSaveCallback = useCallback(handleSave, [post, setPost]);
   React.useEffect(() => {
-    const interval = setInterval(handleSaveCallback, 10000);
+    const interval = setInterval(handleSaveCallback, 20000);
     return () => clearInterval(interval);
   }, [handleSaveCallback]);
   if (!isMounted) {
