@@ -1,9 +1,11 @@
 import usePost from '@/hooks/use-post';
 import EditorJS from '@editorjs/editorjs';
-import { BoldIcon, ItalicIcon, Loader2, XIcon } from 'lucide-react';
+import { Loader2, XIcon } from 'lucide-react';
 import React, { useCallback } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Button } from '../ui/button';
+import EditorFooter from '../ui/editor-footer';
+import EditorHeader from '../ui/editor-header';
+import EditorToolbar from '../ui/editor-toolbar';
 const Editor = () => {
   const ref = React.useRef<EditorJS>();
   const [isSaving, setIsSaving] = React.useState<boolean>(false);
@@ -11,8 +13,7 @@ const Editor = () => {
   const { post, setPost } = usePost();
 
   const initializeEditor = React.useCallback(async () => {
-    const Strikethrough = (await import('@sotaproject/strikethrough')).default;
-    const Underline = (await import('@editorjs/underline')).default;
+    const tools = (await import('@/configs/editor')).default;
     if (!ref.current) {
       const editor = new EditorJS({
         holder: 'editor',
@@ -27,13 +28,7 @@ const Editor = () => {
             href: true,
           },
         },
-        tools: {
-          strikethrough: Strikethrough,
-          Underline: Underline,
-          close: {
-            class: CloseTool,
-          },
-        },
+        tools,
       });
     }
   }, [post]);
@@ -55,8 +50,8 @@ const Editor = () => {
     }
   }, [isMounted, initializeEditor]);
 
-  const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
+  const handleSave = async (e?: React.MouseEvent<HTMLElement>) => {
+    e && e.preventDefault();
     console.log(post);
     setIsSaving((prev) => !prev);
     const data = await ref?.current?.save();
@@ -65,7 +60,7 @@ const Editor = () => {
   };
   const handleSaveCallback = useCallback(handleSave, [post, setPost]);
   React.useEffect(() => {
-    const interval = setInterval(handleSaveCallback, 15000);
+    const interval = setInterval(handleSaveCallback, 10000);
     return () => clearInterval(interval);
   }, [handleSaveCallback]);
   if (!isMounted) {
@@ -77,31 +72,24 @@ const Editor = () => {
   }
 
   return (
-    <form>
+    <form className="flex-1 flex flex-col justify-between">
       <div>
-        <BoldIcon className="w-4 h-4" />
-        <ItalicIcon className="w-4 h-4" />
-      </div>
-      <div className="grid w-full gap-10">
-        <div className="prose prose-stone mx-auto w-[800px] dark:prose-invert">
-          <div id="editor" className="min-h-[500px]" />
+        <EditorHeader />
+        <EditorToolbar />
+        <div className="mt-4 grid w-full gap-10">
+          <div className="prose prose-stone mx-auto w-[800px] dark:prose-invert">
+            <div id="editor" className="min-h-[500px]" />
+          </div>
         </div>
       </div>
-      <div>
-        <div className="flex w-full items-center justify-between">
-          <Button onClick={handleSave}>
-            {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            <span>Save</span>
-          </Button>
-        </div>
-      </div>
+      <EditorFooter isSaving={isSaving} handleSave={handleSave} />
     </form>
   );
 };
 
 export default Editor;
 
-class CloseTool {
+export class CloseTool {
   private api;
   private button: HTMLButtonElement | null;
   iconClasses: { base: string };

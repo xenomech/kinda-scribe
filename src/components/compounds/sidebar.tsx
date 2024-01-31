@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
+import { UpgradePlanCard } from '@/components/ui/upgrade-plan-card';
 import { PRIMARY_LINKS, SECONDARY_LINKS } from '@/configs';
 import { PencilAltIcon } from '@heroicons/react/solid';
-import { UpgradePlanCard } from '../ui/upgrade-plan-card';
 
 const Sidebar = () => {
   return (
-    <aside className="w-64 md:h-screen flex items-start flex-col border-r">
+    <aside className="w-64 min-w-64 md:h-screen flex items-start flex-col border-r">
       <div className="w-full px-4">
         <div className="h-14 w-full "></div>
         <Button

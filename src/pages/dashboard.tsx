@@ -6,8 +6,10 @@ const Dashboard = () => {
   return (
     <div className="flex flex-col md:flex-row">
       <Sidebar />
-      <Editor />
-      <Preview />
+      <div className="flex w-full">
+        <Editor />
+        <Preview />
+      </div>
     </div>
   );
 };
